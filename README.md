@@ -1,4 +1,4 @@
-ecommercehackathon
+<SECRET FOOD NAME>
 ==================
 
-Our ecommerce hackathon app
+Our ecommerce hack day app
