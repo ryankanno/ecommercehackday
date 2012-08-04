@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block body %}
+{% from "_formhelpers.html" import render_field %}
+<form method=post action="/">
+<fieldset>
+  <dl>
+    {{ render_field(form.email) }}
+    {{ render_field(form.invitees) }}
+    {{ render_field(form.feast_datetime) }}
+  </dl>
+  <p><input type=submit value=Create></p>
+</fieldset>
+</form>
+{% endblock body %}

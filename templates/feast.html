@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+Hello {{participant.email}}!
+
+You've been selected to order from:
+
+{{restaurant.name}}
+
+<form id="cc-form" method="post" action="/order">
+  <div>
+    <label for="cc_number">Credit Card Number</label>
+    <input type="text" id="cc_number" name="cc_number" />
+  </div>
+  <div>
+    <label for="cc_exp_date">Expiration Date</label>
+    <input type="text" id="cc_exp_date" name="cc_exp_date" />
+  </div>
+  <div>
+    <label for="cc_cvv">CVV</label>
+    <input type="text" id="cc_cvv" name="cc_cvv" />
+  </div>
+  <input type="submit" />
+</form>
+
+<script type="text/javascript">
+  $(function () {
+    var braintree = Braintree.create("MIIBCgKCAQEA0RyN9g4vVEDb8CoPPnUa+fQ3wsqWu+DucoP7raxHW/y0grF98oUa5h3ndwn0w0It38UUq6CGOHE2sOQr0n20DBWkbauQgfhrbWtoUBgA2QEjpq7s+RpxUAZ5hvBd9a27Wdj0ozEFJ+vYfEKY+KNv0HxasvKl07u8D8gMyarGI0qc+8PmZh7GxJkasdo7xfvy19GIPQ5raJ8Rwx4iPJ2vSRoGbPp+OdMQdx75wYGkArwSlF1/q7c1s70/vHhELAAFILlOVS6HZwUdfrLviKgWFLG6QwnGDcwBh070y2saSUwO3wtca14PWRqURbEC050Gim4U7hUKzHc4CjNBug45GwIDAQAB");
+    var form = $("#cc-form");
+    var encryptedSelector = "#cc_number";
+
+    form.submit(function (e) {
+      var clonedForm = form.clone();
+      clonedForm.find(encryptedSelector).each(function () {
+        $(this).val(braintree.encrypt($(this).val()));
+      });
+    });
+  });
+</script>
+
+{% endblock body %}
