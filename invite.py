@@ -5,7 +5,7 @@ from flask import render_template
 
 
 def send_feast_invite(sendgrid_username, 
-    sendgrid_password, ordrin_api_key, feast):
+    sendgrid_password, ordrin_api_key, feast, url):
 
     s = sendgrid.Sendgrid(sendgrid_username, sendgrid_password, secure=True)
     creator = [x for x in feast.participants if x.is_creator]
@@ -21,7 +21,7 @@ def send_feast_invite(sendgrid_username,
                 'creator': creator[0].email,
                 'start_date': feast.feast_date,
                 'invite_link':
-                "http://localhost:5000/{0}/{1}".format(feast.guid, participant.hash),
+                "{0}{1}/{2}".format(url, feast.guid, participant.hash),
                 'restaurant': restaurant
             }
 

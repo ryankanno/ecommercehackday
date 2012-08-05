@@ -73,7 +73,8 @@ def create():
             db_session.commit()
             send_feast_invite(app.config["SENDGRID_USERNAME"], 
                 app.config["SENDGRID_PASSWORD"],
-                app.config["ORDRIN_API_KEY"], feast)
+                app.config["ORDRIN_API_KEY"], feast, 
+                app.config["LOCALTUNNEL_URL"])
 
             api = ordrin.APIs(app.config["ORDRIN_API_KEY"], ordrin.TEST) 
             restaurant = api.restaurant.get_details(restaurant_id)
@@ -85,7 +86,7 @@ def create():
             worker.postSchedule('friendly-feast', payload={'feast_guid':
                 feast.guid, 'url': app.config["LOCALTUNNEL_URL"]},
                 start_at=(datetime.datetime.utcnow() +
-                    datetime.timedelta(seconds=10)).timetuple())
+                    datetime.timedelta(seconds=120)).timetuple())
 
             return render_template('feast_confirmation.html', feast=feast,
                 restaurant=restaurant, form=form)

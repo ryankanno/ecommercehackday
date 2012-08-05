@@ -10,6 +10,8 @@ def charge_order(merchant_id, pub_key, priv_key, credit_card, amount, expiration
         priv_key
     )
 
+    amount = int(amount) / 100
+
     result = braintree.Transaction.sale({
         "amount": amount,
         "credit_card": {

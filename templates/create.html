@@ -6,7 +6,6 @@
     {
         var obj = JSON.parse(data);
         $.each(obj, function(key, value) {   
-             console.log(value);
              $('#restaurant-select')
                  .append($("<option></option>")
                  .attr("value",value.id)
@@ -15,6 +14,13 @@
     }
 
     $(document).ready(function() {
+
+        $('#loading').ajaxStart(function() {
+            $(this).show();
+        }).ajaxStop(function() {
+            $(this).hide();
+        });
+
         $('.datepicker').datepicker();
 
         $('div#addy input').change(function() {
@@ -67,6 +73,7 @@
 
             <label>4. Who's cooking for you?</label>
             {{ form.restaurant(id="restaurant-select", placeholder="Places Nearby") }}
+            <span id="loading"><img src="/static/img/loading.gif"/></span>
 
             <label>5. Who's invited?</label>
             {{ form.invitees(placeholder="Email address, Email address, ...") }}

@@ -16,9 +16,15 @@
         {% endfor %}
         </dd>
     </dl>
-    <h1 style="clear:both;">Here's what you ordered:</h2>
+    <h1 style="clear:both; color:#fc0">Here's what you ordered:</h2>
     <p>
-        Foods
+    {% for menu in restaurant.menu %}
+        {% for item in menu.children %}
+        {% if item.id == participant.orders[0].tray_string.split('/')[0] %}
+        {{participant.orders[0].tray_string.split('/')[1]}} {{item.name}} @ ${{item.price}}
+        {% endif %}
+        {% endfor %}
+    {% endfor %}
     </p>
     <br/>
     <br/>
