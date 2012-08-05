@@ -136,7 +136,7 @@ def submit_order():
     feast = Feast.query.filter_by(guid=request.form['guid']).first()
     if feast:
         api = ordrin.APIs(app.config["ORDRIN_API_KEY"], ordrin.TEST) 
-    return render_to_response('submit_order.html')
+    return render_template('submit_order.html')
 
 
 @app.route("/order", methods=['POST'])
