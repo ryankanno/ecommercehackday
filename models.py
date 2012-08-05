@@ -43,5 +43,10 @@ class FeastParticipantOrder(Base):
 
     id = Column(Integer, primary_key=True)
     participant_id = Column(BigInteger, ForeignKey('FeastParticipant.id'))
-    menu_item = Column(BigInteger)
-    sub_menu_item = Column(BigInteger)
+    tray_string = Column(String)
+    tray_total = Column(String)
+    
+    def __init__(self, participant_id=None, tray_string=None, tray_total=None):
+        self.participant_id = participant_id
+        self.tray_string = tray_string
+        self.tray_total = tray_total

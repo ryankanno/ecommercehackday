@@ -1,42 +1,271 @@
 {% extends "layout.html" %}
 
+{% block extra_head %}
+
+{% raw %}
+<script id="tpl-menu" type="text/html">
+<ul class="menuList">
+  {{#menu}}
+    <li class="menuCategory" data-mgid="{{id}}">
+      <div class="menu-hd">
+        <p class="header itemListName">{{name}}</p>
+      </div>
+      <ul class="itemList menu main-menu">
+        {{#children}}
+          <li class="mi" data-listener="menuItem" data-miid="{{id}}">
+	          <p class="name">{{name}}</p>
+	          <p>
+	            <span class="price">{{price}}</span>
+	          </p>
+          </li>
+        {{/children}}
+      </ul>
+    </li>
+  {{/menu}}
+</ul>
+<div class="trayContainer">
+  <div class="yourTray">Your Tray</div>
+  <div class="addressContainer"><b>Delivery Address:</b>
+    <div class="address">
+      {{#address}}
+        {{addr}}<br>
+        {{#addr2}}{{this}}<br>{{/addr2}}
+        {{city}}, {{state}} {{zip}}<br>
+        {{phone}}<br>
+        <div class="link" data-listener="editAddress">Edit</div>
+      {{/address}}
+      {{^address}}
+      <div class="link" data-listener="editAddress">Please enter your address</div>
+      {{/address}}
+    </div>
+    <div class="addressForm hidden">
+      <form name="ordrinAddress">
+        <label>Street Address 1: <input type="text" name="addr" placeholder="Street Address 1"></label><span class="addrError"></span></br>
+        <label>Street Address 2: <input type="text" name="addr2" placeholder="Street Address 2"></label><span class="addr2Error"></span></br>
+        <label>City: <input type="text" name="city" placeholder="City"></label><span class="cityError"></span></br>
+        <label>State: <input type="text" name="state" placeholder="State"></label><span class="stateError"></span></br>
+        <label>Zip Code: <input type="text" name="zip" placeholder="Zip Code"></label><span class="zipError"></span></br>
+        <label>Phone Number: <input type="tel" name="phone" placeholder="Phone Number"></label><span class="phoneError"></span></br>
+        <input type="button" class="buttonRed" value="Update" data-listener="updateAddress">
+      </form>
+    </div>
+  </div>
+  <div class="dateTimeContainer"><b>Delivery Date/Time:</b>
+    <div class="dateTime">
+      {{deliveryTime}}
+    </div>
+    <div class="link" data-listener="editDeliveryTime">Edit</div>
+    <div class="dateTimeForm hidden">
+      <form name="ordrinDateTime">
+        <label>Date
+          <select name="date" onchange="ordrin.mustard.dateSelected()">
+            <option value="ASAP" selected="selected">ASAP</option>
+          </select>
+        </label>
+        <div class="timeForm hidden">
+          <label>Time
+            <select name="time">
+              <option value="12:00" selected="selected">12:00</option>
+	            <option value="12:15">12:15</option>
+	            <option value="12:30">12:30</option>
+	            <option value="12:45">12:45</option>
+              <option value="01:00">01:00</option> 
+	            <option value="01:15">01:15</option> 
+	            <option value="01:30">01:30</option>
+	            <option value="01:45">01:45</option>
+	            <option value="02:00">02:00</option>
+	            <option value="02:15">02:15</option>
+	            <option value="02:30">02:30</option>
+	            <option value="02:45">02:45</option>
+	            <option value="03:00">03:00</option>
+	            <option value="03:15">03:15</option>
+	            <option value="03:30">03:30</option>
+	            <option value="03:45">03:45</option>
+	            <option value="04:00">04:00</option>
+	            <option value="04:15">04:15</option>
+	            <option value="04:30">04:30</option>
+	            <option value="04:45">04:45</option>
+	            <option value="05:00">05:00</option>
+	            <option value="05:15">05:15</option>
+	            <option value="05:30">05:30</option>
+	            <option value="05:45">05:45</option>
+	            <option value="06:00">06:00</option>
+	            <option value="06:15">06:15</option>
+	            <option value="06:30">06:30</option>
+	            <option value="06:45">06:45</option>
+	            <option value="07:00">07:00</option>
+	            <option value="07:15">07:15</option>
+	            <option value="07:30">07:30</option>
+	            <option value="07:45">07:45</option>
+	            <option value="08:00">08:00</option>
+	            <option value="08:15">08:15</option>
+	            <option value="08:30">08:30</option>
+	            <option value="08:45">08:45</option>
+	            <option value="09:00">09:00</option>
+	            <option value="09:15">09:15</option>
+	            <option value="09:30">09:30</option>
+	            <option value="10:00">10:00</option>
+	            <option value="10:15">10:15</option>
+	            <option value="10:30">10:30</option>
+	            <option value="10:45">10:45</option>
+	            <option value="11:00">11:00</option>
+	            <option value="11:15">11:15</option>
+	            <option value="11:30">11:30</option>
+	            <option value="11:45">11:45</option>
+            </select>
+          </label>
+          <select name="ampm">
+	          <option value="PM" selected>PM</option>
+            <option value="AM">AM</option>
+	        </select>
+        </div>
+        <input type="button" class="smButtonRed" value="Update" data-listener="updateDateTime">
+      </form>
+    </div>
+  </div>
+  <ul class="tray">
+  </ul>
+  <div class="subtotal">
+    Subtotal: <span class="subtotalValue">0.00</span>
+  </div>
+  <div class="tip">
+    Tip: <span class="tipValue">0.00</span>
+    <input type="number" min="0.00" step="0.01" value="0.00" class="tipInput">
+    <input type="button" value="Update" data-listener="updateTray">
+  </div>
+  {{^noProxy}}
+  <div class="fee">
+    Fee: <span class="feeValue">0.00</span>
+  </div>
+  <div class="tax">
+    Tax: <span class="taxValue">0.00</span>
+  </div>
+  {{/noProxy}}
+  <div class="total">
+    Total: <span class="totalValue">0.00</span>
+  </div>
+  
+  <div id="cc-container">
+    <form id="cc-form"> 
+      <div>
+        <label for="cc_number">Credit Card Number</label>
+        <input type="text" id="cc_number" />
+      </div>
+      <div>
+        <label for="cc_exp_date">Expiration Date</label>
+        <input type="text" id="cc_exp_date" name="cc_exp_date" />
+      </div>
+      <div>
+        <label for="cc_cvv">CVV</label>
+        <input type="text" id="cc_cvv" name="cc_cvv" />
+      </div>
+      <input type="submit" value="FEAST"/>
+    </form>
+  </div> 
+
+</div>
+<!-- Menu Item Dialog -->
+<div class="optionsDialog popup-container hidden"></div>
+<div class="dialogBg fade-to-gray hidden"></div>
+<div class="errorDialog popup-container hidden">
+  <div class="dialog popup-box-container">
+    <div class="close-popup-box">
+      <img class="closeDialog" data-listener="closeError" src="https://fb.ordr.in/images/popup-close.png" />
+    </div>
+    <span class="errorMsg"></span>
+  </div>
+</div>
+<div class="errorBg fade-to-gray hidden"></div>
+</script>
+{% endraw %}
+
+    <script type="text/javascript">
+    (function(){
+        var ow = document.createElement('script'); 
+        ow.type = 'text/javascript'; 
+        ow.async = true;
+        ow.src = '/static/js/mustard.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(ow, s);  
+    })();
+
+    var ordrin = typeof ordrin==="undefined"?{}:ordrin;
+  
+    ordrin.render = "menu";
+    ordrin.rid = 141;
+    ordrin.noProxy = true;
+    ordrin.menu = {{restaurant.menu|tojson|safe}};
+    ordrin.template = $('#tpl-menu').html();
+    ordrin.menuTemplate = $('#tpl-menu').html();
+
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var braintree = Braintree.create("MIIBCgKCAQEA0RyN9g4vVEDb8CoPPnUa+fQ3wsqWu+DucoP7raxHW/y0grF98oUa5h3ndwn0w0It38UUq6CGOHE2sOQr0n20DBWkbauQgfhrbWtoUBgA2QEjpq7s+RpxUAZ5hvBd9a27Wdj0ozEFJ+vYfEKY+KNv0HxasvKl07u8D8gMyarGI0qc+8PmZh7GxJkasdo7xfvy19GIPQ5raJ8Rwx4iPJ2vSRoGbPp+OdMQdx75wYGkArwSlF1/q7c1s70/vHhELAAFILlOVS6HZwUdfrLviKgWFLG6QwnGDcwBh070y2saSUwO3wtca14PWRqURbEC050Gim4U7hUKzHc4CjNBug45GwIDAQAB");
+            var encryptedSelector = "#cc_number";
+            var result = $('#result');
+            var guid = "{{feast.guid}}";
+            var hash = "{{participant.hash}}";
+
+            var successfulResponse = function (data) {
+                content = "<p>Card Number: " + data["credit_card_number"] + "</p>";
+                content += "<p>Card Type: " + data["credit_card_type"] + "</p>";
+                result.append(content).show();
+            };
+
+            var failedResponse = function (data) {
+                result.append("<p>Error:</p><p>" + data["error_message"] + "</p>").show();
+            };
+
+            var ajaxSuccess = function (data) {
+                $('#cc-form').hide();
+                $('#cc-form').find(encryptedSelector).each(function () {
+                    $(this).val("");
+                });
+
+                parsedData = $.parseJSON(data);
+
+                if (parsedData["success"]) {
+                    successfulResponse(parsedData);
+                } else {
+                    failedResponse(parsedData);
+                }
+            };
+
+            $('form input[type=submit]').live('click', function (e) {
+                e.preventDefault();
+
+                var params = {"guid": guid, "hash":hash};
+
+                params["cc_number"] = braintree.encrypt($('#cc_number').val());
+                params["cc_exp_date"] = $('#cc_exp_date').val();
+                params["cc_cvv"] = $('#cc_cvv').val();
+
+                params["tray_string"] = ordrin.tray.buildTrayString();
+                params["tray_amount"] = ordrin.tray.getSubtotal();
+
+                $.post("/order", params, ajaxSuccess);
+            });
+        });
+    </script>
+    {% endblock extra_head %}
+
 {% block body %}
 
-Hello {{participant.email}}!
+<div id="feast_info">
+    <img src="/static/img/logo.png"/>
+    <dl>
+        <dt>What</dt><dd>{{restaurant.name}}</dd>
+        <dt>When</dt><dd>{{feast.feast_date}}</dd>
+    </dl>
+    <p>
+        So, {{participant.email}}, what would you like to eat?
+    </p>
+</div>
 
-You've been selected to order from:
+<div id="ordrinMenu"></div>
 
-{{restaurant.name}}
-
-<form id="cc-form" method="post" action="/order">
-  <div>
-    <label for="cc_number">Credit Card Number</label>
-    <input type="text" id="cc_number" name="cc_number" />
-  </div>
-  <div>
-    <label for="cc_exp_date">Expiration Date</label>
-    <input type="text" id="cc_exp_date" name="cc_exp_date" />
-  </div>
-  <div>
-    <label for="cc_cvv">CVV</label>
-    <input type="text" id="cc_cvv" name="cc_cvv" />
-  </div>
-  <input type="submit" />
-</form>
-
-<script type="text/javascript">
-  $(function () {
-    var braintree = Braintree.create("MIIBCgKCAQEA0RyN9g4vVEDb8CoPPnUa+fQ3wsqWu+DucoP7raxHW/y0grF98oUa5h3ndwn0w0It38UUq6CGOHE2sOQr0n20DBWkbauQgfhrbWtoUBgA2QEjpq7s+RpxUAZ5hvBd9a27Wdj0ozEFJ+vYfEKY+KNv0HxasvKl07u8D8gMyarGI0qc+8PmZh7GxJkasdo7xfvy19GIPQ5raJ8Rwx4iPJ2vSRoGbPp+OdMQdx75wYGkArwSlF1/q7c1s70/vHhELAAFILlOVS6HZwUdfrLviKgWFLG6QwnGDcwBh070y2saSUwO3wtca14PWRqURbEC050Gim4U7hUKzHc4CjNBug45GwIDAQAB");
-    var form = $("#cc-form");
-    var encryptedSelector = "#cc_number";
-
-    form.submit(function (e) {
-      var clonedForm = form.clone();
-      clonedForm.find(encryptedSelector).each(function () {
-        $(this).val(braintree.encrypt($(this).val()));
-      });
-    });
-  });
-</script>
+<div id="result"></div>
 
 {% endblock body %}

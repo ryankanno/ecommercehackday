@@ -1,13 +1,15 @@
 import braintree
 
-braintree.Configuration.configure(
-    braintree.Environment.Sandbox,
-    "the_merchant_id",
-    "the_public_key",
-    "the_private_key"
-)
 
-def order(credit_card, amount, expiration_date, menu_item):
+def charge_order(merchant_id, pub_key, priv_key, credit_card, amount, expiration_date):
+
+    braintree.Configuration.configure(
+        braintree.Environment.Sandbox,
+        merchant_id,
+        pub_key,
+        priv_key
+    )
+
     result = braintree.Transaction.sale({
         "amount": amount,
         "credit_card": {
@@ -17,9 +19,8 @@ def order(credit_card, amount, expiration_date, menu_item):
     })
 
     if result.is_success:
-# save transaction here
         return result.is_success
     elif result.transaction:
-# save transaction here
+        return False
     else:
-# save transaction here
+        return False

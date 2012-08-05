@@ -1,15 +1,71 @@
 {% extends "layout.html" %}
 
+{% block extra_head %}
+<script type="text/javascript">
+    function ajaxDeliverySuccess(data)
+    {
+        console.log(data);
+    }
+
+    $(document).ready(function() {
+        $('.datepicker').datepicker();
+
+        $('div#addy input').change(function() {
+            if (($('div#addy input#street').val() != "") && 
+                ($('div#addy input#city').val() != "") && 
+                ($('div#addy input#zip').val() != ""))
+            {
+                var params = {};
+                params["zip"] = $('div#addy input#zip').val();
+                params["city"] = $('div#addy input#city').val();
+                params["addr"] = $('div#addy input#street').val();
+
+                $.post("/delivery", params, ajaxDeliverySuccess);
+            }
+        });
+    });
+</script>
+
+{% endblock extra_head %}
+
 {% block body %}
-{% from "_formhelpers.html" import render_field %}
-<form method=post action="/">
-<fieldset>
-  <dl>
-    {{ render_field(form.email) }}
-    {{ render_field(form.invitees) }}
-    {{ render_field(form.feast_datetime) }}
-  </dl>
-  <p><input type=submit value=Create></p>
-</fieldset>
-</form>
+<div id="create-form">
+    <img src="/static/img/large-logo.png"/>
+
+    <div class="well">
+
+    <form method=post action="/">
+        <fieldset>
+            <label>1. What's your email address?</label>
+            {% if form.email.errors %}
+                {% for error in form.email.errors %}
+                <div class="error">{{error}}</div>
+                {% endfor %}
+            {% endif %}
+            {{ form.email(placeholder="Email address") }}
+            <label>2. When should the food arrive?</label>
+
+            {{ form.feast_datetime(class_="datepicker") }}
+            <span class="add-on"><i class="icon-th"></i></span>
+            
+            <label>3. Where the party at?</label>
+
+            <div id="addy">
+            {{ form.street(id="street", placeholder="Street") }}
+            {{ form.city(id="city", placeholder="City") }}
+            {{ form.zip(id="zip", placeholder="Zip Code") }}
+            <div>
+
+            <label>4. Who's cooking for you?</label>
+            {{ form.restaurant(placeholder="Places Nearby") }}
+
+            <label>5. Who's invited?</label>
+            {{ form.invitees(placeholder="Email address, Email address, ...") }}
+        </dl>
+        <p><input type=submit value="Feast!" class="btn"></p>
+        </fieldset>
+    </form>
+
+    </div>
+</div>
 {% endblock body %}

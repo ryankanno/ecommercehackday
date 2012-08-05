@@ -1,0 +1,22 @@
+var  ordrin = (ordrin instanceof Object) ? ordrin : {};
+
+(function(){
+  if(!ordrin.hasOwnProperty("template")){
+    ordrin.menuTemplate = "{{{menu}}}";
+  }
+
+  if(!ordrin.hasOwnProperty("dialogTemplate")){
+    ordrin.dialogTemplate = "{{{dialog}}}";
+  }
+
+  if(!ordrin.hasOwnProperty("trayItemTemlate")){
+    ordrin.trayItemTemplate = "{{{trayItem}}}";
+  }
+
+  if(!ordrin.hasOwnProperty("restaurantsTemplate")){
+    ordrin.restaurantsTemplate = "{{{restaurants}}}";
+  }
+
+  {{{mustache}}}
+  ordrin.Mustache = Mustache;
+})();
