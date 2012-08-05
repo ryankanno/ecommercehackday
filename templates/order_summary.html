@@ -20,8 +20,11 @@
     <p>
         Foods
     </p>
+    <br/>
+    <br/>
+    <br/>
     <dl>
-        <dt>Your total:</dt><dd>{{participant.orders[0].tray_total}}</dd>
+        <dt>Your total:</dt><dd>{{"${0:.2f}".format(total/100, 'US')}}</dd>
     </dl>
 </div>
 {% endblock body %}

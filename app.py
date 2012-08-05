@@ -107,7 +107,8 @@ def feast(feast_guid, hash):
 
             if order:
                 return render_template('order_summary.html', feast=feast,
-                    participant=participant[0], restaurant=restaurant)
+                    participant=participant[0], restaurant=restaurant,
+                    total=int(participant[0].orders[0].tray_total))
             else:
                 return render_template('feast.html', feast=feast,
                     participant=participant[0], restaurant=restaurant)
@@ -128,7 +129,10 @@ def delivery():
 
 @app.route("/submit_order", methods=['POST'])
 def submit_order():
-    import pdb; pdb_stacktrace();
+    feast = Feast.query.filter_by(guid=request.form['guid']).first()
+    if feast:
+        api = ordrin.APIs(app.config["ORDRIN_API_KEY"], ordrin.TEST) 
+    return render_to_response('submit_order.html')
 
 
 @app.route("/order", methods=['POST'])
