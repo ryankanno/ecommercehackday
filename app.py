@@ -3,6 +3,8 @@
 
 import sys, os
 
+import json
+
 from flask import Flask, request, render_template, jsonify
 from flaskext.csrf import csrf, csrf_exempt
 from werkzeug.routing import BaseConverter
@@ -45,6 +47,7 @@ def shutdown_session(exception=None):
 @app.route("/", methods=['GET','POST'])
 def create():
     form = FeastForm(request.form, csrf_enabled=False)
+    form.restaurant.choices = [(0,'Places Nearbys'),]
     if form.validate_on_submit():
         restaurant_id = 302
         feast = Feast(str(uuid.uuid1()), datetime.datetime.utcnow(), restaurant_id)
@@ -60,12 +63,6 @@ def create():
 
         db_session.add(feast)
 
-        api = ordrin.APIs(app.config["ORDRIN_API_KEY"], ordrin.TEST) 
-        restaurant = api.restaurant.get_details(restaurant_id)
-
-        return render_template('feast_confirmation.html', feast=feast,
-            restaurant=restaurant, form=form)
-
         try:
             db_session.commit()
             send_feast_invite(app.config["SENDGRID_USERNAME"], 
@@ -75,12 +72,22 @@ def create():
             api = ordrin.APIs(app.config["ORDRIN_API_KEY"], ordrin.TEST) 
             restaurant = api.restaurant.get_details(restaurant_id)
 
+            from iron_worker import *
+            worker = IronWorker(token=app.config["IRON_IO_KEY"], 
+                project_id=app.config["IRON_IO_PROJECT_ID"])
+
+            worker.postSchedule('friendly-feast', payload={'feast_guid':
+                feast.guid, 'url': app.config["LOCALTUNNEL_URL"]},
+                start_at=(datetime.datetime.utcnow() +
+                    datetime.timedelta(seconds=10)).timetuple())
+
             return render_template('feast_confirmation.html', feast=feast,
                 restaurant=restaurant, form=form)
         except Exception as e:
             print e
 
-    return render_template('create.html', form=form)
+    return render_template('create.html', form=form,
+            now=datetime.datetime.utcnow().strftime("%m/%d/%Y"))
 
 
 @app.route('/<regex("[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}"):feast_guid>/<regex("[a-zA-Z0-9]{40}"):hash>')
@@ -113,15 +120,12 @@ def delivery():
         request.form["zip"], '0123456789')
     
     future_datetime = datetime.datetime.now() + datetime.timedelta(hours=12)
-    return jsonify(api.restaurant.get_delivery_list(future_datetime, address))
+    return json.dumps(api.restaurant.get_delivery_list(future_datetime, address))
 
 
 @app.route("/submit_order", methods=['POST'])
 def submit_order():
-    api = ordrin.APIs(app.config["ORDRIN_API_KEY"], ordrin.TEST) 
-    address = request.form["address"]
-    future_datetime = datetime.datetime.now() + datetime.timedelta(hours=12) 
-    return api.restaurant.get_delivery_list(future_datetime, address)
+    import pdb; pdb_stacktrace();
 
 
 @app.route("/order", methods=['POST'])

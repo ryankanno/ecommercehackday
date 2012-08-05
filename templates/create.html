@@ -4,7 +4,14 @@
 <script type="text/javascript">
     function ajaxDeliverySuccess(data)
     {
-        console.log(data);
+        var obj = JSON.parse(data);
+        $.each(obj, function(key, value) {   
+             console.log(value);
+             $('#restaurant-select')
+                 .append($("<option></option>")
+                 .attr("value",value.id)
+                 .text(value.na)); 
+        });
     }
 
     $(document).ready(function() {
@@ -45,7 +52,7 @@
             {{ form.email(placeholder="Email address") }}
             <label>2. When should the food arrive?</label>
 
-            {{ form.feast_datetime(class_="datepicker") }}
+            {{ form.feast_datetime(class_="datepicker", value=now) }}
             <span class="add-on"><i class="icon-th"></i></span>
             
             <label>3. Where the party at?</label>
@@ -57,7 +64,7 @@
             <div>
 
             <label>4. Who's cooking for you?</label>
-            {{ form.restaurant(placeholder="Places Nearby") }}
+            {{ form.restaurant(id="restaurant-select", placeholder="Places Nearby") }}
 
             <label>5. Who's invited?</label>
             {{ form.invitees(placeholder="Email address, Email address, ...") }}

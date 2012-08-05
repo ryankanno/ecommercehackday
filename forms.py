@@ -8,5 +8,4 @@ class FeastForm(Form):
     street = TextField('Street', validators=[Required()])
     city = TextField('City', validators=[Required()])
     zip = TextField('Zip', validators=[Required()])
-    restaurant = SelectField('Restaurant', coerce=int,
-            choices=((0,'Places nearby'),))
+    restaurant = SelectField('Restaurant', coerce=int)

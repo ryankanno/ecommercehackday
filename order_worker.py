@@ -1,1 +1,1 @@
-import helperpayload = getArg("payload")
+from helpers import getArgimport urllibimport urllib2import jsonpayload = json.loads(open(getArg("payload")).read())url = payload.url + "/submit_order"values = {'guid' : payload.feast_guid}data = urllib.urlencode(values)req = urllib2.Request(url, data)response = urllib2.urlopen(req)
