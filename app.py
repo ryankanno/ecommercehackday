@@ -49,9 +49,12 @@ def create():
     form = FeastForm(request.form, csrf_enabled=False)
     form.restaurant.choices = [(0,'Places Nearbys'),]
     if form.validate_on_submit():
-        restaurant_id = 302
+        restaurant_id = request.form["restaurant"]
 
-        feast = Feast(str(uuid.uuid1()), datetime.datetime.utcnow(), 
+        feast_datetime = datetime.datetime.strptime(request.form["feast_date"] + " " +
+                request.form["feast_time"], '%m/%d/%Y %I:00 %p')
+
+        feast = Feast(str(uuid.uuid1()), feast_datetime,
             restaurant_id, form.street.data, form.city.data, form.zip.data)
 
         creator = FeastParticipant(form.email.data, 
