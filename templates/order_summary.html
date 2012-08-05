@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<div id="order-summary"> 
+    <h1>Congratulations! You're ready to Feast!</h1>
+    <dl>
+        <dt>What:</dt><dd>Feast from {{restaurant.name}}</dd>
+        <dt>When:</dt><dd> {{feast.feast_date.strftime("%A, %B %e, @ %I:%M %p")}}<dd>
+        <dt>Where:</dt><dd>{{feast.street}} {{feast.city}}, {{feast.zip}}</dd>
+        <dt>Who:</dt>
+        <dd>
+        {% for participant in feast.participants %}
+            {% if participant.orders %}
+                {{ participant.email}}
+            {% endif %}
+        {% endfor %}
+        </dd>
+    </dl>
+    <h1 style="clear:both;">Here's what you ordered:</h2>
+    <p>
+        Foods
+    </p>
+    <dl>
+        <dt>Your total:</dt><dd>{{participant.orders[0].tray_total}}</dd>
+    </dl>
+</div>
+{% endblock body %}

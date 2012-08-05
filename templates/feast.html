@@ -2,6 +2,11 @@
 
 {% block extra_head %}
 
+<style type="text/css">
+    body { background-image:none; }
+    div#feast-info { color: #000;}
+</style>
+
 {% raw %}
 <script id="tpl-menu" type="text/html">
 <ul class="menuList">
@@ -204,33 +209,11 @@
         $(document).ready(function() {
             var braintree = Braintree.create("MIIBCgKCAQEA0RyN9g4vVEDb8CoPPnUa+fQ3wsqWu+DucoP7raxHW/y0grF98oUa5h3ndwn0w0It38UUq6CGOHE2sOQr0n20DBWkbauQgfhrbWtoUBgA2QEjpq7s+RpxUAZ5hvBd9a27Wdj0ozEFJ+vYfEKY+KNv0HxasvKl07u8D8gMyarGI0qc+8PmZh7GxJkasdo7xfvy19GIPQ5raJ8Rwx4iPJ2vSRoGbPp+OdMQdx75wYGkArwSlF1/q7c1s70/vHhELAAFILlOVS6HZwUdfrLviKgWFLG6QwnGDcwBh070y2saSUwO3wtca14PWRqURbEC050Gim4U7hUKzHc4CjNBug45GwIDAQAB");
             var encryptedSelector = "#cc_number";
-            var result = $('#result');
             var guid = "{{feast.guid}}";
             var hash = "{{participant.hash}}";
 
-            var successfulResponse = function (data) {
-                content = "<p>Card Number: " + data["credit_card_number"] + "</p>";
-                content += "<p>Card Type: " + data["credit_card_type"] + "</p>";
-                result.append(content).show();
-            };
-
-            var failedResponse = function (data) {
-                result.append("<p>Error:</p><p>" + data["error_message"] + "</p>").show();
-            };
-
             var ajaxSuccess = function (data) {
-                $('#cc-form').hide();
-                $('#cc-form').find(encryptedSelector).each(function () {
-                    $(this).val("");
-                });
-
-                parsedData = $.parseJSON(data);
-
-                if (parsedData["success"]) {
-                    successfulResponse(parsedData);
-                } else {
-                    failedResponse(parsedData);
-                }
+                window.location.reload();
             };
 
             $('form input[type=submit]').live('click', function (e) {
@@ -253,11 +236,11 @@
 
 {% block body %}
 
-<div id="feast_info">
+<div id="feast-info">
     <img src="/static/img/logo.png"/>
     <dl>
-        <dt>What</dt><dd>{{restaurant.name}}</dd>
-        <dt>When</dt><dd>{{feast.feast_date}}</dd>
+        <dt>What:</dt><dd>{{restaurant.name}}</dd>
+        <dt>When:</dt><dd> {{feast.feast_date.strftime("%A, %B %e, @ %I:%M %p")}}<dd>
     </dl>
     <p>
         So, {{participant.email}}, what would you like to eat?
@@ -265,7 +248,5 @@
 </div>
 
 <div id="ordrinMenu"></div>
-
-<div id="result"></div>
 
 {% endblock body %}
