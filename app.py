@@ -50,7 +50,10 @@ def create():
     form.restaurant.choices = [(0,'Places Nearbys'),]
     if form.validate_on_submit():
         restaurant_id = 302
-        feast = Feast(str(uuid.uuid1()), datetime.datetime.utcnow(), restaurant_id)
+
+        feast = Feast(str(uuid.uuid1()), datetime.datetime.utcnow(), 
+            restaurant_id, form.street.data, form.city.data, form.zip.data)
+
         creator = FeastParticipant(form.email.data, 
             hashlib.sha1(bytes(random.random())).hexdigest(), is_creator=True)
 
@@ -153,7 +156,7 @@ def order():
                 db_session.add(order)
                 try:
                     db_session.commit()
-                    return render_template('order_confirmation.html')
+                    return jsonify({'success': True})
                 except Exception as e:
                     print e
 

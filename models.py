@@ -10,14 +10,21 @@ class Feast(Base):
     guid = Column(String)
     feast_date = Column(DateTime)
     restaurant_id = Column(BigInteger) 
+    street = Column(String)
+    city = Column(String)
+    zipcode = Column(String)
 
     participants = relationship('FeastParticipant', backref='feast',
         primaryjoin="Feast.id==FeastParticipant.feast_id")
 
-    def __init__(self, guid=None, feast_date=None, restaurant_id=None): 
+    def __init__(self, guid=None, feast_date=None, restaurant_id=None,
+            street=None, city=None, zipcode=None): 
         self.guid = guid
         self.feast_date = feast_date
         self.restaurant_id = restaurant_id
+        self.street = street
+        self.city = city 
+        self.zipcode = zipcode
     
 
 class FeastParticipant(Base):
