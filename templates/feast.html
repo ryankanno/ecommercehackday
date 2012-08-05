@@ -3,8 +3,43 @@
 {% block extra_head %}
 
 <style type="text/css">
-    body { background-image:none; }
-    div#feast-info { color: #000;}
+    body { background-image:none; background-color:#525262;}
+    div#feast-info { color: #fff;}
+    .addressContainer { display: none; }
+    .dateTimeContainer { display: none; }
+    #ordrinMenu .menuList {
+        background-color:#2f2f35; 
+        padding:1em;
+        border:1px solid #ccc;
+    }
+    #ordrinMenu .trayContainer {
+        margin-right: 8em;
+    }
+    #ordrinMenu .menu li .price {
+       color:#fff;  
+    }
+    #ordrinMenu .menu-hd p:first-child, .header
+    {
+        color:#fc0;
+    }
+    #ordrinMenu .menu li
+    {
+        padding-left:6px;
+    }
+    #ordrinMenu .menu li:hover
+    {
+        background-color:#ffda47;
+    }
+    #ordrinMenu .menu li:hover p.name,
+    #ordrinMenu .menu li:hover .price 
+    {
+        color:#495262;
+    }
+    #ordrinMenu .menu li p
+    {
+        color:#fff;
+    }
+
 </style>
 
 {% raw %}
@@ -29,7 +64,7 @@
   {{/menu}}
 </ul>
 <div class="trayContainer">
-  <div class="yourTray">Your Tray</div>
+  <div class="yourTray">Your Feast</div>
   <div class="addressContainer"><b>Delivery Address:</b>
     <div class="address">
       {{#address}}
@@ -164,7 +199,7 @@
         <label for="cc_cvv">CVV</label>
         <input type="text" id="cc_cvv" name="cc_cvv" />
       </div>
-      <input type="submit" value="FEAST"/>
+      <input type="submit" value="Feast!"/>
     </form>
   </div> 
 
@@ -241,8 +276,9 @@
     <dl>
         <dt>What:</dt><dd>{{restaurant.name}}</dd>
         <dt>When:</dt><dd> {{feast.feast_date.strftime("%A, %B %e, @ %I:%M %p")}}<dd>
+        <dt>Where:</dt><dd>{{feast.street}} {{feast.city}}, {{feast.zipcode}}</dd>
     </dl>
-    <p>
+    <p style="margin-left:35px;">
         So, {{participant.email}}, what would you like to eat?
     </p>
 </div>
